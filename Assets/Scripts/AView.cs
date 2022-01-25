@@ -13,6 +13,7 @@ public abstract class AView : MonoBehaviour
         SetActive(isActiveOnStart);
     }
 
+    [Sirenix.OdinInspector.Button]
     public void SetActive(bool isActive)
     {
         if (isActive) CameraController.Instance.AddView(this);

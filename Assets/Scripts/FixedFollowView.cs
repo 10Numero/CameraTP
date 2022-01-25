@@ -11,10 +11,13 @@ public class FixedFollowView : AView
 
     public override CameraConfiguration GetConfiguration()
     {
-        dir = target.position - transform.position;
-        //dir.Normalize();
-        var debug = Mathf.Atan2(dir.normalized.x, dir.normalized.z) * Mathf.Rad2Deg;
-        currentConfiguration.yaw = debug;
+        //dir = target.position - CameraController.Instance.currentCamera.transform.position;
+        //var debug = Mathf.Atan2(dir.normalized.x, dir.normalized.z) * Mathf.Rad2Deg;
+        //Debug.Log("debug : " + debug);
+        //currentConfiguration.yaw = debug;
+        //Quaternion look at entre target et CameraController.Instance.currentCamera.transform.position;
+        //euler.x yaw
+            //euler.y pitch
         currentConfiguration.pitch = -Mathf.Asin(dir.normalized.y) * Mathf.Rad2Deg;
         currentConfiguration.roll = roll;
         currentConfiguration.fov = fov;

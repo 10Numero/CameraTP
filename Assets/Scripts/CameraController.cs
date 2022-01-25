@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Sirenix.OdinInspector;
 
 public class CameraController : AView
 {
@@ -16,34 +17,6 @@ public class CameraController : AView
 
     public static CameraController Instance;
 
-    private IEnumerator TestFloatLerp(float duration)
-    {
-        float time = 0;
-
-        float yaw;
-        float pitch;
-        float roll;
-        float fov;
-
-        CameraConfiguration cf1 = a1.GetConfiguration();
-        CameraConfiguration cf2 = a2.GetConfiguration();
-
-        while (time < duration)
-        {
-            time += Time.deltaTime;
-
-            //Calcul déplacement
-            yaw = ComputeAverageYaw();
-            pitch = Mathf.Lerp(cf1.pitch, cf2.pitch, time / duration);
-            roll = Mathf.Lerp(cf1.roll, cf2.roll, time / duration);
-            fov = Mathf.Lerp(cf1.fov, cf2.fov, time / duration);
-            currentCamera.transform.rotation = Quaternion.Euler(yaw, pitch, roll);
-            currentCamera.fieldOfView = fov;
-            yield return null;
-        }
-        //currentCamera.transform.rotation = Quaternion.Euler(, cf2.pitch, cf2.roll);
-        //currentCamera.fieldOfView = cf2.fov;
-    }
 
     public float ComputeAverageYaw()
     {
@@ -60,7 +33,7 @@ public class CameraController : AView
 
     public void ApplyConfiguration(Camera __camera, CameraConfiguration __config)
     {
-        
+        currentConfiguration = __config;
     }
 
     public void AddView(AView view)
@@ -152,20 +125,20 @@ public class CameraController : AView
         var funk = EasingFunction.GetEasingFunction(EasingFunction.Ease.EaseInOutQuad);
         float value = funk(0, 1, t);
         Quaternion variableAPart = Quaternion.Euler(ComputeAverageYaw(), totalPitch / totalWeight, totalRoll / totalWeight);
-        currentCamera.fieldOfView = Mathf.Lerp(currentCamera.fieldOfView, totalFov / totalWeight, value);
+        currentCamera.fieldOfView = Mathf.Lerp(currentConfiguration.fov, totalFov / totalWeight, value);
         currentCamera.transform.rotation = Quaternion.Lerp(currentCamera.transform.rotation, variableAPart, value);
         
     }
 
-    public void DrawGizmos(Color color)
-    {
-        Gizmos.color = color;
-        Gizmos.DrawSphere(currentConfiguration.pivot, 0.25f);
-        Vector3 position = currentConfiguration.GetPosition();
-        Gizmos.DrawLine(currentConfiguration.pivot, position);
-        Gizmos.matrix = Matrix4x4.TRS(position, currentConfiguration.GetRotation(), Vector3.one);
-        Gizmos.DrawFrustum(Vector3.zero, currentConfiguration.fov, 0.5f, 0f, Camera.main.aspect);
-        Gizmos.matrix = Matrix4x4.identity;
-    }
+    //public void DrawGizmos(Color color)
+    //{
+    //    Gizmos.color = color;
+    //    Gizmos.DrawSphere(currentConfiguration.pivot, 0.25f);
+    //    Vector3 position = currentConfiguration.GetPosition();
+    //    Gizmos.DrawLine(currentConfiguration.pivot, position);
+    //    Gizmos.matrix = Matrix4x4.TRS(position, currentConfiguration.GetRotation(), Vector3.one);
+    //    Gizmos.DrawFrustum(Vector3.zero, currentConfiguration.fov, 0.5f, 0f, Camera.main.aspect);
+    //    Gizmos.matrix = Matrix4x4.identity;
+    //}
     #endregion
 }
