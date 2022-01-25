@@ -4,8 +4,8 @@ using UnityEngine;
 
 public abstract class AView : MonoBehaviour
 {
-    public CameraConfiguration currentConfiguration;
-    public float weight;
+    protected CameraConfiguration currentConfiguration = new CameraConfiguration();
+    [Range(0, 1)]public float weight;
     public bool isActiveOnStart;
 
     private void Start()
@@ -15,10 +15,10 @@ public abstract class AView : MonoBehaviour
 
     public void SetActive(bool isActive)
     {
-        CameraController.Instance.AddView(this);
+        if (isActive) CameraController.Instance.AddView(this);
     }
 
-    protected virtual CameraConfiguration GetConfiguration()
+    public virtual CameraConfiguration GetConfiguration()
     {
         return currentConfiguration;
     }

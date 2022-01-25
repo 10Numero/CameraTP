@@ -2,9 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-[CreateAssetMenu(menuName = "Camera Configuration")]
-public class CameraConfiguration : ScriptableObject
+public class CameraConfiguration : MonoBehaviour
 {
     public float yaw;
     public float pitch;

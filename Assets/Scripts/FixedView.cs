@@ -9,8 +9,12 @@ public class FixedView : AView
     public float roll;
     public float fov;
 
-    protected override CameraConfiguration GetConfiguration()
+    public override CameraConfiguration GetConfiguration()
     {
+        currentConfiguration.yaw = yaw;
+        currentConfiguration.pitch = pitch;
+        currentConfiguration.roll = roll;
+        currentConfiguration.fov = fov;
         currentConfiguration.pivot = transform.position;
         currentConfiguration.distance = 0;
 
