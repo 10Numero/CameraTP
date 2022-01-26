@@ -34,7 +34,7 @@ public class FixedFollowView : AView
         var dirAnglePitch = Mathf.Atan2(dirTarget.x, dirTarget.z) * Mathf.Rad2Deg;
 
         var cpAngleYaw = Mathf.Asin(dirCp.y) * Mathf.Rad2Deg;
-        float dirAngleYaw = Mathf.Asin(dirTarget.y) * Mathf.Rad2Deg;
+        float dirAngleYaw = -Mathf.Asin(dirTarget.y) * Mathf.Rad2Deg;
 
 
 
@@ -44,9 +44,9 @@ public class FixedFollowView : AView
             rot = Quaternion.LookRotation(dirTarget);
 
         //Debug.Log("x " + cpAngle + " pitchmax " + pitchOffsetMax);
-        Debug.Log("angle : " + cpAngleYaw);
+        //Debug.Log("angle : " + cpAngleYaw);
 
-        //currentConfiguration.yaw = Mathf.Clamp(float.IsNaN(dirAngleYaw) ? 0 : -dirAngleYaw, (-yawOffsetMax + (cpAngleYaw - dirAngleYaw)), yawOffsetMax + (cpAngleYaw - dirAngleYaw));
+        ////currentConfiguration.yaw = Mathf.Clamp(float.IsNaN(dirAngleYaw) ? 0 : dirAngleYaw, (-yawOffsetMax + (cpAngleYaw - dirAngleYaw)), yawOffsetMax + (cpAngleYaw - dirAngleYaw));
         //currentConfiguration.pitch = Mathf.Clamp(float.IsNaN(dirAnglePitch) ? 0 : dirAnglePitch, (-pitchOffsetMax + (cpAnglePitch - dirAnglePitch)), pitchOffsetMax + (cpAnglePitch - dirAnglePitch));
         currentConfiguration.roll = roll;
         currentConfiguration.fov = fov;
