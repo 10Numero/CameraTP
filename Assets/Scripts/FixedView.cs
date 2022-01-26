@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class FixedView : AView
 {
+    [Header("View Settings")]
     public float yaw;
     public float pitch;
     public float roll;

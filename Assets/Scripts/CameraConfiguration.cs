@@ -3,14 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class CameraConfiguration : MonoBehaviour
+public class CameraConfiguration
 {
+    public CameraConfiguration(Transform cameraTransform)
+    {
+        this.cameraTransform = cameraTransform;
+    }
+
     public float yaw;
     public float pitch;
     public float roll;
     public Vector3 pivot;
     public float distance;
     public float fov;
+    public Transform cameraTransform;
 
     public Quaternion GetRotation()
     {
@@ -19,7 +25,6 @@ public class CameraConfiguration : MonoBehaviour
 
     public Vector3 GetPosition()
     {
-        //return pivot + ?offset
-        return pivot;
+        return GetRotation() * (Vector3.back * distance) + cameraTransform.position;
     }
 }
