@@ -124,6 +124,8 @@ public class CameraController : MonoBehaviour
         }
 
         t += speed * Time.deltaTime;
+
+        //Delegate func
         var funk = EasingFunction.GetEasingFunction(EasingFunction.Ease.EaseInOutQuad);
         float value = funk(0, 1, Mathf.Clamp01(t));
 
@@ -132,20 +134,11 @@ public class CameraController : MonoBehaviour
         Vector3 targetPos = totalPos / totalWeight;
 
         currentCamera.fieldOfView = Mathf.Lerp(currentCamera.fieldOfView, totalFov / totalWeight, Mathf.Clamp01(value));
-        currentCamera.transform.rotation = Quaternion.Lerp(currentCamera.transform.rotation, targetRot, Mathf.Clamp01(value));
+        currentCamera.transform.rotation = Quaternion.Slerp(currentCamera.transform.rotation, targetRot, Mathf.Clamp01(value));
         currentCamera.transform.position = Vector3.Lerp(currentCamera.transform.position, targetPos, Mathf.Clamp01(value));
         
     }
 
-    public void DrawGizmos(Color color)
-    {
-        Gizmos.color = color;
-        Gizmos.DrawSphere(currentConfiguration.pivot, 0.25f);
-        Vector3 position = currentConfiguration.GetPosition();
-        Gizmos.DrawLine(currentConfiguration.pivot, position);
-        Gizmos.matrix = Matrix4x4.TRS(position, currentConfiguration.GetRotation(), Vector3.one);
-        Gizmos.DrawFrustum(Vector3.zero, currentConfiguration.fov, 0.5f, 0f, Camera.main.aspect);
-        Gizmos.matrix = Matrix4x4.identity;
-    }
+    
     #endregion
 }

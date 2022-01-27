@@ -11,12 +11,17 @@ public class Rail : MonoBehaviour
     [System.Serializable]
     public class Noeud
     {
-        public float normalizedPos;
+        public float dist;
+        public float normalizedDist;
         public Vector3 noeudPosition;
         [HideInInspector] public Vector3 lastNoeudPosition;
     }
 
     public List<Noeud> noeuds = new List<Noeud> ();
+
+    [Header("Auto")]
+    public bool rIsAuto;
+    public Transform target;
 
     [Header("Debug")]
     public float sphereRadius = 1;
@@ -40,12 +45,45 @@ public class Rail : MonoBehaviour
 
     private void Update()
     {
-        ApplyPosition(sphereDistPosition);
+        if (!rIsAuto)
+        {
+            ApplyPosition(sphereDistPosition);
+        }
         B();
+
+        CloseToTarget();
+    }
+
+    private void CloseToTarget()
+    {
+        if (!rIsAuto)
+        {
+            return;
+        }
+
+        Vector3 closestPoint = Vector3.positiveInfinity;
+        int segmentIndex = 0;
+
+        for (int i = 0; i < noeuds.Count - 1; i++)
+        {
+            var a = MathUtils.GetNearestPointOnSegment(noeuds[i].noeudPosition, noeuds[i == noeuds.Count - 1 ? 0 : i + 1].noeudPosition, target.transform.position);
+            if (Vector3.Distance(target.transform.position, a) < Vector3.Distance(target.transform.position, closestPoint))
+            {
+                closestPoint = a;
+                segmentIndex = i;
+            }
+        }
+        //GetDistance(closestPoint, segmentIndex);
+        ApplyPosition(GetDistance(closestPoint, segmentIndex));
     }
 
     void B()
     {
+        if (!isLoop && sphereDistPosition > noeuds[noeuds.Count - 2].dist && !rIsAuto)
+        {
+            return;
+        }
+
         for(int i = 0; i < noeuds.Count - 1; i++)
         {
             if (noeuds[i].lastNoeudPosition != transform.GetChild(i).position)
@@ -60,9 +98,33 @@ public class Rail : MonoBehaviour
         return _length;
     }
 
+    public float GetDistance(Vector3 pos, int index = 0)
+    {
+        //J'aime pas les maths >.<
+        //J'ai capté R
+        //float abDist = Vector3.Distance(noeuds[index].noeudPosition, noeuds[index == noeuds.Count - 1 ? 0 : index + 1].noeudPosition);
+        float acDist = Vector3.Distance(noeuds[index].noeudPosition, pos);
+        //float acDistNormalized = acDist / abDist;
+
+        ////Debug.Log(acDistNormalized);
+
+        //int newIndex = index == 0 ? noeuds.Count - 1 : index - 1;
+
+        float totalLength = noeuds[index].dist + acDist;
+
+        return totalLength;
+
+        //chuuuuuuuut
+    }
+
     [Button]
     public Vector3 GetPosition(float distance)
     {
+        if (!isLoop && sphereDistPosition > noeuds[noeuds.Count - 2].dist)
+        {
+            return Vector3.zero;
+        }
+
         if (distance <= 0)
             return Vector3.zero;
 
@@ -72,8 +134,8 @@ public class Rail : MonoBehaviour
         float normalizedDst = distance / _length;
         var index = ClosestNoeud(normalizedDst);
 
-        float normalizedDstBetweenPoints = noeuds[index == noeuds.Count - 1 ? 0 : index + 1].normalizedPos - noeuds[index].normalizedPos;
-        float normalizedDstNoramlizedBetweenPoints = (normalizedDst - noeuds[index].normalizedPos) / normalizedDstBetweenPoints;
+        float normalizedDstBetweenPoints = noeuds[index == noeuds.Count - 1 ? 0 : index + 1].normalizedDist - noeuds[index].normalizedDist;
+        float normalizedDstNoramlizedBetweenPoints = (normalizedDst - noeuds[index].normalizedDist) / normalizedDstBetweenPoints;
         var normalizedPosBetweenPoint = Vector3.Lerp(noeuds[index].noeudPosition, noeuds[index == noeuds.Count - 1 ? 0 : index + 1].noeudPosition, normalizedDstNoramlizedBetweenPoints);
         spherePosDebug.position = normalizedPosBetweenPoint;
         return normalizedPosBetweenPoint;
@@ -81,6 +143,11 @@ public class Rail : MonoBehaviour
 
     public void ApplyPosition(float distance)
     {
+        if (!isLoop && sphereDistPosition > noeuds[noeuds.Count - 2].dist)
+        {
+            return;
+        }
+
         if (distance <= 0)
             return;
 
@@ -90,8 +157,8 @@ public class Rail : MonoBehaviour
         float normalizedDst = distance / _length;
         var index = ClosestNoeud(normalizedDst);
 
-        float normalizedDstBetweenPoints = noeuds[index == noeuds.Count - 1 ? 0 : index + 1].normalizedPos - noeuds[index].normalizedPos;
-        float normalizedDstNoramlizedBetweenPoints = (normalizedDst - noeuds[index].normalizedPos) / normalizedDstBetweenPoints;
+        float normalizedDstBetweenPoints = noeuds[index == noeuds.Count - 1 ? 0 : index + 1].normalizedDist - noeuds[index].normalizedDist;
+        float normalizedDstNoramlizedBetweenPoints = (normalizedDst - noeuds[index].normalizedDist) / normalizedDstBetweenPoints;
         var normalizedPosBetweenPoint = Vector3.Lerp(noeuds[index].noeudPosition, noeuds[index == noeuds.Count - 1 ? 0 : index + 1].noeudPosition, normalizedDstNoramlizedBetweenPoints);
         spherePosDebug.position = normalizedPosBetweenPoint; 
     }
@@ -101,7 +168,7 @@ public class Rail : MonoBehaviour
         //Debug.Log("noeuds : " + noeuds[i].normalizedPos);
         for (int i = 0; i < noeuds.Count; i++) 
         {
-            if (normalizedDst <= noeuds[i].normalizedPos)
+            if (normalizedDst <= noeuds[i].normalizedDist)
                 return i - 1;
         }
 
@@ -126,9 +193,10 @@ public class Rail : MonoBehaviour
 
         Noeud cheatNoeud = new Noeud();
         cheatNoeud.noeudPosition = transform.GetChild(0).transform.position;
-        cheatNoeud.normalizedPos = 1.0f;
+        cheatNoeud.normalizedDist = 1.0f;
         noeuds.Add(cheatNoeud);
-
+        cheatNoeud.dist = _length;
+        
         float actualLength = 0;
 
         for (int i = 0; i < noeuds.Count - 1; i++)
@@ -136,7 +204,9 @@ public class Rail : MonoBehaviour
             if (i > 0)
                 actualLength += Vector3.Distance(noeuds[i - 1].noeudPosition, noeuds[i].noeudPosition);
 
-            noeuds[i].normalizedPos = actualLength / _length;
+            noeuds[i].dist = actualLength;
+            noeuds[i].normalizedDist = actualLength / _length;
         }
+
     }
 }

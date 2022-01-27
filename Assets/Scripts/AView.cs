@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteInEditMode]
 public abstract class AView : MonoBehaviour
 {
     [Header("Default Settings")]
@@ -26,7 +27,7 @@ public abstract class AView : MonoBehaviour
 
     public void SetActive(bool isActive)
     {
-        if (isActive) CameraController.Instance.AddView(this);
+        if (isActive) CameraController.Instance?.AddView(this);
     }
 
     [Sirenix.OdinInspector.Button]
@@ -48,6 +49,11 @@ public abstract class AView : MonoBehaviour
 
     private void OnDisable()
     {
-        if(isActiveOnStart) CameraController.Instance.RemoveView(this);
+        if(isActiveOnStart) CameraController.Instance?.RemoveView(this);
+    }
+
+    public void OnDrawGizmos()
+    {
+        GetConfiguration().DrawGizmos(Color.blue);
     }
 }

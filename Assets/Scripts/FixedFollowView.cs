@@ -27,7 +27,7 @@ public class FixedFollowView : AView
         //currentConfiguration.pitch = -Mathf.Asin(dir.normalized.y) * Mathf.Rad2Deg;
         #endregion
 
-        var dirTarget = target.position - CameraController.Instance.currentCamera.transform.position;
+        var dirTarget = target.position - transform.position;
         var dirCp = centralPoint.position - transform.position;
 
         var cpAnglePitch = Mathf.Atan2(dirCp.x, dirCp.z) * Mathf.Rad2Deg;
