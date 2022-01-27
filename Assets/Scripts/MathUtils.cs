@@ -15,4 +15,17 @@ public static class MathUtils
 
         return projC;
     }
+
+    public static Vector3 LinearBezier(Vector3 A, Vector3 B, float t) { return default; }
+    public static Vector3 QuadraticBezier(Vector3 A, Vector3 B, Vector3 C, float t) { return default; }
+    public static Vector3 CubicBezier(Vector3 A, Vector3 B, Vector3 C, Vector3 D, float t) 
+    {
+        Vector3 lerpAB = Vector3.Lerp(A, B, t);
+        Vector3 lerpBC = Vector3.Lerp(B, C, t);
+        Vector3 lerpCD = Vector3.Lerp(C, D, t);
+        Vector3 lerpAC = Vector3.Lerp(lerpAB, lerpBC, t);
+        Vector3 lerpBD = Vector3.Lerp(lerpBC, lerpCD, t);
+        Vector3 finalLerp = Vector3.Lerp(lerpAC, lerpBD, t);
+        return finalLerp;
+    }
 }

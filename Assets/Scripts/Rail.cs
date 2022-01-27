@@ -100,21 +100,11 @@ public class Rail : MonoBehaviour
 
     public float GetDistance(Vector3 pos, int index = 0)
     {
-        //J'aime pas les maths >.<
-        //J'ai capté R
-        //float abDist = Vector3.Distance(noeuds[index].noeudPosition, noeuds[index == noeuds.Count - 1 ? 0 : index + 1].noeudPosition);
         float acDist = Vector3.Distance(noeuds[index].noeudPosition, pos);
-        //float acDistNormalized = acDist / abDist;
-
-        ////Debug.Log(acDistNormalized);
-
-        //int newIndex = index == 0 ? noeuds.Count - 1 : index - 1;
 
         float totalLength = noeuds[index].dist + acDist;
 
         return totalLength;
-
-        //chuuuuuuuut
     }
 
     [Button]
