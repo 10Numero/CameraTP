@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Curve : MonoBehaviour
 {
+
     public Curve(Vector3 a, Vector3 b, Vector3 c, Vector3 d, float sphereRadius)
     {
         this.a = a;
@@ -19,13 +20,22 @@ public class Curve : MonoBehaviour
     public Vector3 d;
     public float sphereRadius;
 
-    public Vector3 GetPosition(float t) { return default; }
-    public Vector3 GetPosition(float t, Matrix4x4 localToWorldMatrix) { return default; }
-    public void DrawGizmo(Color color, Matrix4x4 localToWorldMatrix)
+    public Vector3 GetPosition(float t)
     {
-        Gizmos.DrawSphere(transform.position + a, sphereRadius);
-        Gizmos.DrawSphere(transform.position + b, sphereRadius);
-        Gizmos.DrawSphere(transform.position + c, sphereRadius);
-        Gizmos.DrawSphere(transform.position + d, sphereRadius);
+        return default;
+    }
+
+    public Vector3 GetPosition(float t, Matrix4x4 localToWorldMatrix) 
+    {
+        var pWorld = transform.localToWorldMatrix.MultiplyPoint(transform.localPosition);
+        return pWorld;
+    }
+
+    public void DrawGizmo(Color color, Vector3 worldPos)
+    {
+        Gizmos.DrawSphere(worldPos + a, sphereRadius);
+        Gizmos.DrawSphere(worldPos + b, sphereRadius);
+        Gizmos.DrawSphere(worldPos + c, sphereRadius);
+        Gizmos.DrawSphere(worldPos + d, sphereRadius);
     }
 }

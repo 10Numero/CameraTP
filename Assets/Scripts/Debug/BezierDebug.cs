@@ -15,11 +15,11 @@ public class BezierDebug : MonoBehaviour
 
     private void Update()
     {
-        sphere.position = MathUtils.CubicBezier(curve.a, curve.b, curve.c, curve.d, rangeT);
+        sphere.position = MathUtils.CubicBezier(curve.a + transform.position, curve.b + transform.position, curve.c + transform.position, curve.d + transform.position, rangeT);
     }
 
     private void OnDrawGizmos()
     {
-        curve.DrawGizmo(Color.magenta, Matrix4x4.zero);
+        curve.DrawGizmo(Color.magenta, transform.position);
     }
 }
